@@ -160,7 +160,7 @@ class TestChronosTools:
         fake_soa_dir = '/tmp/'
         expected_chronos_conf_file = 'chronos-penguin'
         with contextlib.nested(
-            mock.patch('paasta_tools.chronos_tools.load_deployments_json', autospec=True,),
+            mock.patch('paasta_tools.chronos_tools.load_v2_deployments_json', autospec=True,),
             mock.patch('service_configuration_lib.read_extra_service_information', autospec=True),
         ) as (
             mock_load_deployments_json,
@@ -179,7 +179,7 @@ class TestChronosTools:
     def test_load_chronos_job_config(self):
         fake_soa_dir = '/tmp/'
         with contextlib.nested(
-            mock.patch('paasta_tools.chronos_tools.load_deployments_json', autospec=True,),
+            mock.patch('paasta_tools.chronos_tools.load_v2_deployments_json', autospec=True,),
             mock.patch('paasta_tools.chronos_tools.read_chronos_jobs_for_service', autospec=True),
         ) as (
             mock_load_deployments_json,
@@ -200,7 +200,7 @@ class TestChronosTools:
     def test_load_chronos_job_config_can_ignore_deployments(self):
         fake_soa_dir = '/tmp/'
         with contextlib.nested(
-            mock.patch('paasta_tools.chronos_tools.load_deployments_json', autospec=True,),
+            mock.patch('paasta_tools.chronos_tools.load_v2_deployments_json', autospec=True,),
             mock.patch('paasta_tools.chronos_tools.read_chronos_jobs_for_service', autospec=True),
         ) as (
             mock_load_deployments_json,
@@ -1393,7 +1393,7 @@ class TestChronosTools:
             mock.patch('paasta_tools.chronos_tools.load_system_paasta_config', autospec=True),
             mock.patch('paasta_tools.chronos_tools.load_chronos_job_config',
                        autospec=True, return_value=fake_chronos_job_config),
-            mock.patch('paasta_tools.monitoring_tools.get_team', return_value=fake_owner, autospec=True),
+            mock.patch('paasta_tools.chronos_tools.monitoring_tools.get_team', return_value=fake_owner, autospec=True),
             mock.patch('paasta_tools.chronos_tools.get_config_hash', return_value=fake_config_hash, autospec=True),
         ) as (
             load_system_paasta_config_patch,

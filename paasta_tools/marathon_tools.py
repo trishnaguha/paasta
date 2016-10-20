@@ -50,8 +50,9 @@ from paasta_tools.utils import get_docker_url
 from paasta_tools.utils import get_paasta_branch
 from paasta_tools.utils import get_service_instance_list
 from paasta_tools.utils import get_user_agent
-from paasta_tools.utils import load_deployments_json
+from paasta_tools.utils import InvalidInstanceConfig
 from paasta_tools.utils import load_system_paasta_config
+from paasta_tools.utils import load_v2_deployments_json
 from paasta_tools.utils import NoConfigurationForServiceError
 from paasta_tools.utils import PaastaNotConfiguredError
 from paasta_tools.utils import ZookeeperPool
@@ -150,9 +151,10 @@ def load_marathon_service_config(service, instance, cluster, load_deployments=Tr
 
     branch_dict = {}
     if load_deployments:
-        deployments_json = load_deployments_json(service, soa_dir=soa_dir)
+        deployments_json = load_v2_deployments_json(service, soa_dir=soa_dir)
         branch = general_config.get('branch', get_paasta_branch(cluster, instance))
-        branch_dict = deployments_json.get_branch_dict(service, branch)
+        deploy_group = general_config.get('deploy_group', branch)
+        branch_dict = deployments_json.get_branch_dict_v2(service, branch, deploy_group)
 
     return MarathonServiceConfig(
         service=service,
