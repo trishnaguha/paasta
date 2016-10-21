@@ -21,11 +21,12 @@ import requests_cache
 
 from paasta_tools import chronos_serviceinit
 from paasta_tools import marathon_serviceinit
-from paasta_tools.cli.cmds.status import get_actual_deployments
+from paasta_tools.cli.utils import get_instance_config
 from paasta_tools.utils import compose_job_id
 from paasta_tools.utils import decompose_job_id
 from paasta_tools.utils import DEFAULT_SOA_DIR
 from paasta_tools.utils import load_system_paasta_config
+from paasta_tools.utils import load_v2_deployments_json
 from paasta_tools.utils import PaastaColors
 from paasta_tools.utils import validate_service_instance
 
@@ -64,11 +65,6 @@ def parse_args():
     return args
 
 
-def get_deployment_version(actual_deployments, cluster, instance):
-    key = '.'.join((cluster, instance))
-    return actual_deployments[key][:8] if key in actual_deployments else None
-
-
 def main():
     args = parse_args()
     if args.debug:
@@ -94,13 +90,16 @@ def main():
     requests_cache.install_cache("paasta_serviceinit", backend="memory")
 
     cluster = load_system_paasta_config().get_cluster()
-    actual_deployments = get_actual_deployments(service, args.soa_dir)
+    soa_dir = args.soa_dir
+
+    deployments_json = load_v2_deployments_json(service=service, soa_dir=soa_dir)
 
     for instance in instances:
+        instance_config = get_instance_config(service=service, instance=instance, cluster=cluster, soa_dir=soa_dir)
         # For an instance, there might be multiple versions running, e.g. in crossover bouncing.
         # In addition, mesos master does not have information of a chronos service's git hash.
         # The git sha in deployment.json is simply used here.
-        version = get_deployment_version(actual_deployments, cluster, instance)
+        version = deployments_json.get_git_sha_for_deploy_group(instance_config.get_deploy_group())
         print 'instance: %s' % PaastaColors.blue(instance)
         print 'Git sha:    %s (desired)' % version
 
