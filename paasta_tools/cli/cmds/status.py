@@ -35,8 +35,8 @@ from paasta_tools.marathon_tools import MarathonDeployStatus
 from paasta_tools.utils import DEFAULT_SOA_DIR
 from paasta_tools.utils import get_soa_cluster_deploy_files
 from paasta_tools.utils import list_clusters
+from paasta_tools.utils import load_deployments_json
 from paasta_tools.utils import load_system_paasta_config
-from paasta_tools.utils import load_v2_deployments_json
 from paasta_tools.utils import PaastaColors
 
 
@@ -121,7 +121,7 @@ def list_deployed_clusters(pipeline, actual_deployments):
 
 
 def get_actual_deployments(service, soa_dir):
-    deployments_json = load_v2_deployments_json(service, soa_dir)
+    deployments_json = load_deployments_json(service, soa_dir)
     if not deployments_json:
         sys.stderr.write("Warning: it looks like %s has not been deployed anywhere yet!\n" % service)
     # Create a dictionary of actual $service Jenkins deployments
