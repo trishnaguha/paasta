@@ -23,6 +23,7 @@ from service_configuration_lib import read_deploy
 from paasta_tools.api.client import get_paasta_api_client
 from paasta_tools.cli.utils import execute_paasta_serviceinit_on_remote_master
 from paasta_tools.cli.utils import figure_out_service_name
+from paasta_tools.cli.utils import get_instance_configs_for_service
 from paasta_tools.cli.utils import lazy_choices_completer
 from paasta_tools.cli.utils import list_services
 from paasta_tools.cli.utils import PaastaCheckMessages
@@ -34,8 +35,8 @@ from paasta_tools.marathon_tools import MarathonDeployStatus
 from paasta_tools.utils import DEFAULT_SOA_DIR
 from paasta_tools.utils import get_soa_cluster_deploy_files
 from paasta_tools.utils import list_clusters
-from paasta_tools.utils import load_deployments_json
 from paasta_tools.utils import load_system_paasta_config
+from paasta_tools.utils import load_v2_deployments_json
 from paasta_tools.utils import PaastaColors
 
 
@@ -120,17 +121,14 @@ def list_deployed_clusters(pipeline, actual_deployments):
 
 
 def get_actual_deployments(service, soa_dir):
-    deployments_json = load_deployments_json(service, soa_dir)
+    deployments_json = load_v2_deployments_json(service, soa_dir)
     if not deployments_json:
         sys.stderr.write("Warning: it looks like %s has not been deployed anywhere yet!\n" % service)
     # Create a dictionary of actual $service Jenkins deployments
     actual_deployments = {}
-    for key in deployments_json:
-        service, namespace = key.encode('utf8').split(':')
-        if service == service:
-            value = deployments_json[key]['docker_image'].encode('utf8')
-            sha = value[value.rfind('-') + 1:]
-            actual_deployments[namespace.replace('paasta-', '', 1)] = sha
+    for config in get_instance_configs_for_service(service=service, soa_dir=soa_dir):
+        actual_deployments[config.get_branch()] = deployments_json.get_git_sha_for_deploy_group(
+            config.get_deploy_group())
     return actual_deployments
 
 
