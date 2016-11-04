@@ -97,7 +97,7 @@ def test_downscale_spot_fleet_request():
                         'instance_weight': 1}
         mock_slave_2 = {'hostname': 'host2', 'instance_id': 'i-blah456',
                         'instance_weight': 2}
-        mock_resource = mock.Mock()
+        mock_resource = {'sfr': {'SpotFleetRequestState': 'active'}}
         mock_filtered_slaves = mock.Mock()
         mock_pool_settings = mock.Mock()
         mock_sfr_sorted_slaves_1 = [mock_slave_1, mock_slave_2]
@@ -122,15 +122,15 @@ def test_downscale_spot_fleet_request():
                                           dry_run=False,
                                           new_capacity=3)
 
-        # test stop when reach capacity
-        mock_sort_slaves_to_kill.return_value = mock_sfr_sorted_slaves_2
+        # test we kill only one instance on scale down and then reach capacity
+        mock_sort_slaves_to_kill.return_value = mock_sfr_sorted_slaves_2[:]
         autoscaling_cluster_lib.downscale_spot_fleet_request(resource=mock_resource,
                                                              filtered_slaves=mock_filtered_slaves,
                                                              pool_settings=mock_pool_settings,
                                                              current_capacity=5,
                                                              target_capacity=4,
                                                              dry_run=False)
-        assert not mock_gracefully_terminate_slave.called
+        assert mock_gracefully_terminate_slave.call_count == 1
 
         # test stop if FailSetSpotCapacity
         mock_gracefully_terminate_slave.side_effect = autoscaling_cluster_lib.FailSetSpotCapacity
@@ -298,10 +298,12 @@ def test_autoscale_local_cluster():
         mock.patch('paasta_tools.autoscaling.autoscaling_cluster_lib.load_system_paasta_config', autospec=True),
         mock.patch('paasta_tools.autoscaling.autoscaling_cluster_lib.is_resource_cancelled', autospec=True),
         mock.patch('paasta_tools.autoscaling.autoscaling_cluster_lib.autoscale_cluster_resource', autospec=True),
+        mock.patch('time.sleep', autospec=True)
     ) as (
         mock_get_paasta_config,
         mock_is_resource_cancelled,
         mock_autoscale_cluster_resource,
+        _,
     ):
 
         mock_scaling_resources = {'id1': {'id': 'sfr-blah1', 'type': 'sfr', 'pool': 'default'},
