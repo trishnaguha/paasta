@@ -44,7 +44,7 @@ def main():
     )
 
     if not marathon_tools.is_app_id_running(app_id=full_appid, client=client):
-        print("Couldn't find an app named {0}".format(full_appid))
+        print(("Couldn't find an app named {0}".format(full_appid)))
         sys.exit(1)
 
     service, instance, _, __ = (s.replace('--', '_') for s in decompose_job_id(full_appid))
@@ -100,10 +100,10 @@ def main():
             soa_dir=soa_dir,
         )
 
-        print "Sleeping for 10 seconds to give the tasks time to drain"
+        print("Sleeping for 10 seconds to give the tasks time to drain")
         time.sleep(10)
 
-    print("Sucessfully killed {0}".format(full_appid))
+    print(("Sucessfully killed {0}".format(full_appid)))
 
 if __name__ == '__main__':
     main()

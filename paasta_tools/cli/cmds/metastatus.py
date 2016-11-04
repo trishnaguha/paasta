@@ -77,16 +77,16 @@ def add_subparser(subparsers):
 def print_cluster_status(cluster, system_paasta_config, humanize, groupings, verbose=0):
     """With a given cluster and verboseness, returns the status of the cluster
     output is printed directly to provide dashbaords even if the cluster is unavailable"""
-    print "Cluster: %s" % cluster
-    print get_cluster_dashboards(cluster)
-    print execute_paasta_metastatus_on_remote_master(
+    print("Cluster: %s" % cluster)
+    print(get_cluster_dashboards(cluster))
+    print(execute_paasta_metastatus_on_remote_master(
         cluster=cluster,
         system_paasta_config=system_paasta_config,
         humanize=humanize,
         groupings=groupings,
         verbose=verbose
-    )
-    print ""
+    ))
+    print("")
 
 
 def figure_out_clusters_to_inspect(args, all_clusters):
@@ -131,5 +131,5 @@ def paasta_metastatus(args):
                 verbose=args.verbose
             )
         else:
-            print "Cluster %s doesn't look like a valid cluster?" % args.clusters
-            print "Try using tab completion to help complete the cluster name"
+            print("Cluster %s doesn't look like a valid cluster?" % args.clusters)
+            print("Try using tab completion to help complete the cluster name")

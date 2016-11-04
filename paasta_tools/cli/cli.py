@@ -32,7 +32,7 @@ class ThrowingArgumentParser(argparse.ArgumentParser):
     is way too terse"""
 
     def error(self, message):
-        print("Argument parse error: %s" % message)
+        print(("Argument parse error: %s" % message))
         print("\n")
         self.print_help()
         sys.exit(1)

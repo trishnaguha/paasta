@@ -587,7 +587,7 @@ def status_for_results(healthcheck_results):
 
 
 def print_results_for_healthchecks(summary, ok, results, verbose, indent=2):
-    print summary
+    print(summary)
     if verbose >= 1:
         for health_check_result in results:
             if health_check_result.healthy:
@@ -681,7 +681,7 @@ def main():
     except MasterNotAvailableException as e:
         # if we can't connect to master at all,
         # then bomb out early
-        print(PaastaColors.red("CRITICAL:  %s" % e.message))
+        print((PaastaColors.red("CRITICAL:  %s" % e.message)))
         sys.exit(2)
 
     mesos_state_status = get_mesos_state_status(
@@ -705,7 +705,7 @@ def main():
         try:
             marathon_results = get_marathon_status(marathon_client)
         except MarathonError as e:
-            print(PaastaColors.red("CRITICAL: Unable to contact Marathon! Error: %s" % e))
+            print((PaastaColors.red("CRITICAL: Unable to contact Marathon! Error: %s" % e)))
             sys.exit(2)
     else:
         marathon_results = [HealthCheckResult(message='Marathon is not configured to run here', healthy=True)]
@@ -715,7 +715,7 @@ def main():
         try:
             chronos_results = get_chronos_status(chronos_client)
         except (chronos.ChronosAPIError) as e:
-            print(PaastaColors.red("CRITICAL: Unable to contact Chronos! Error: %s" % e))
+            print((PaastaColors.red("CRITICAL: Unable to contact Chronos! Error: %s" % e)))
             sys.exit(2)
     else:
         chronos_results = [HealthCheckResult(message='Chronos is not configured to run here', healthy=True)]
@@ -730,7 +730,7 @@ def main():
 
     healthy_exit = True if all([mesos_ok, marathon_ok, chronos_ok]) else False
 
-    print "Master paasta_tools version: {0}".format(__version__)
+    print("Master paasta_tools version: {0}".format(__version__))
     print_results_for_healthchecks(mesos_summary, mesos_ok, all_mesos_results, args.verbose)
     if args.verbose > 1:
         for grouping in args.groupings:

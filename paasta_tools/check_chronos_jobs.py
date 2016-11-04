@@ -198,7 +198,7 @@ def main():
                     soa_dir=soa_dir,
                 )
             except utils.NoDeploymentsAvailable:
-                print(utils.PaastaColors.cyan("Skipping %s because no deployments are available" % service))
+                print((utils.PaastaColors.cyan("Skipping %s because no deployments are available" % service)))
                 continue
             sensu_output, sensu_status = sensu_message_status_for_jobs(
                 chronos_job_config=chronos_job_config,
@@ -220,7 +220,7 @@ def main():
                 soa_dir=soa_dir,
             )
     except (chronos.ChronosAPIError) as e:
-        print(utils.PaastaColors.red("CRITICAL: Unable to contact Chronos! Error: %s" % e))
+        print((utils.PaastaColors.red("CRITICAL: Unable to contact Chronos! Error: %s" % e)))
         sys.exit(2)
 
 

@@ -196,7 +196,7 @@ def paasta_maintenance():
     hostnames = args.hostname
 
     if action != 'status' and not hostnames:
-        print "You must specify one or more hostnames"
+        print("You must specify one or more hostnames")
         return
 
     start = args.start
@@ -231,7 +231,7 @@ def paasta_maintenance():
         ret = mesos_maintenance.is_host_past_maintenance_end(hostnames[0])
     else:
         raise NotImplementedError("Action: '%s' is not implemented." % action)
-    print ret
+    print(ret)
     return ret
 
 if __name__ == '__main__':

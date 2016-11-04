@@ -634,7 +634,7 @@ def test_group_slaves_by_key_func():
     )
     assert len(actual.items()) == 2
     for k, v in actual.items():
-        print k, v
+        print(k, v)
         assert len(list(v)) == 1
 
 
@@ -671,7 +671,7 @@ def test_get_resource_utilization_by_grouping(
     )
     assert sorted(actual.keys()) == sorted(['somenametest-habitat', 'somenametest-habitat-2'])
     for k, v in actual.items():
-        print v
+        print(v)
         assert v['total'] == paasta_metastatus.ResourceInfo(
             cpus=20,
             disk=20,
